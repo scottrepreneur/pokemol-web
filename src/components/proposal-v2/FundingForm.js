@@ -172,7 +172,7 @@ const FundingForm = (props) => {
                         className={field.value ? 'Field HasValue' : 'Field '}
                       >
                         <label>Short Description</label>
-                        <textarea {...field} />
+                        <textarea rows="5" {...field} />
                       </FieldContainer>
                     )}
                   </Field>
@@ -234,7 +234,7 @@ const FundingForm = (props) => {
                             field.value !== '' ? 'Field HasValue' : 'Field '
                           }
                         >
-                          <label>Loot Requested</label>
+                          <label>Loot Requested (Non-voting Shares)</label>
                           <input min="0" step="1" type="number" {...field} />
                         </FieldContainer>
                       )}
