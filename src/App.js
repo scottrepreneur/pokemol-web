@@ -94,7 +94,7 @@ const App = ({ client }) => {
         currentPeriod: parseInt(currentPeriod),
       };
 
-      if (daoData.version !== 2) {
+      if (daoData.version !== 2 && daoData.version !== '2x') {
         guildBankAddr = await daoService.mcDao.getGuildBankAddr();
         guildBankValue = await daoService.token.balanceOf(guildBankAddr);
         cacheData.guildBankValue = daoService.web3.utils.fromWei(

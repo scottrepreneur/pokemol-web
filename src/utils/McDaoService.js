@@ -1,5 +1,6 @@
 import DaoAbi from '../contracts/mcdao.json';
 import DaoAbiV2 from '../contracts/molochv2.json';
+import DaoAbiV2x from '../contracts/molochv2x.json';
 
 export class McDaoService {
   web3;
@@ -11,8 +12,16 @@ export class McDaoService {
 
   constructor(web3, daoAddress, accountAddr, version) {
     this.web3 = web3;
-    const abi = version === 2 ? DaoAbiV2 : DaoAbi;
-    this.daoContract = new web3.eth.Contract(abi, daoAddress);
+    const abi = (version) => {
+      if (version === 2) {
+        return DaoAbiV2;
+      }
+      if (version === '2x') {
+        return DaoAbiV2x;
+      }
+      return DaoAbi;
+    };
+    this.daoContract = new web3.eth.Contract(abi(version), daoAddress);
     this.accountAddr = accountAddr;
     this.contractAddr = daoAddress;
     this.version = version;
@@ -81,7 +90,9 @@ export class McDaoService {
   }
 
   async approvedToken() {
-    const tokenAddress = await this.daoContract.methods.approvedToken().call();
+    const tokenAddress = await this.daoContract.methods
+      .approvedTokens(0)
+      .call();
     return tokenAddress;
   }
 
@@ -122,7 +133,6 @@ export class McDaoService {
   }
 
   async getDepositToken() {
-
     const token = await this.daoContract.methods.depositToken().call();
     return token;
   }

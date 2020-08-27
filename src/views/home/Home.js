@@ -12,7 +12,7 @@ import HeadTags from '../../components/shared/HeadTags';
 import HomeChart from '../../components/shared/HomeChart';
 import WhitelistTokenBalances from '../../components/tokens/WhitelistTokenBalances';
 import { basePadding } from '../../variables.styles';
-import { GET_MOLOCH } from '../../utils/Queries';
+import { GET_MOLOCH_V2X } from '../../utils/Queries';
 
 const HomeDiv = styled.div`
   width: 100%;
@@ -122,14 +122,15 @@ const Home = () => {
   const [chartView, setChartView] = useState('bank');
   const [daoData] = useContext(DaoDataContext);
   const { t } = useTranslation();
+  console.log(daoData);
 
   const options = {
     pollInterval: 60000,
     variables: { contractAddr: daoData.contractAddress },
   };
 
-  const { loading, error, data } = useQuery(GET_MOLOCH, options);
-
+  const { loading, error, data } = useQuery(GET_MOLOCH_V2X, options);
+  console.log(data);
   if (loading) return <Loading />;
   if (error) return <ErrorMessage message={error} />;
 
@@ -143,7 +144,7 @@ const Home = () => {
           <p>{daoData.description || 'Put a Moloch in Your Pocket'}</p>
         </IntroDiv>
         <DataDiv>
-          {+daoData.version === 2 ? (
+          {+daoData.version === 2 || daoData.version === '2x' ? (
             <>
               <div>
                 <h5>Shares</h5>
@@ -200,7 +201,7 @@ const Home = () => {
             </>
           )}
         </DataDiv>
-        {+daoData.version !== 2 && (
+        {+daoData.version !== 2 && daoData.version !== '2x' && (
           <ChartDiv>
             <HomeChart
               guildBankAddr={data.moloch.guildBankAddress}

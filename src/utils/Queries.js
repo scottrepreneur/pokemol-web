@@ -46,6 +46,36 @@ export const GET_MOLOCH = gql`
   }
 `;
 
+export const GET_MOLOCH_V2X = gql`
+  query moloch($contractAddr: String!) {
+    moloch(id: $contractAddr) {
+      meta @client
+      id
+      summoningTime
+      newContract
+      totalShares
+      version
+      guildBankAddress
+      tokenBalances {
+        token {
+          tokenAddress
+          symbol
+          decimals
+        }
+        symbol @client
+        decimals @client
+        tokenBalance
+        guildBank
+        contractTokenBalance @client
+        contractBabeBalance @client
+        moloch {
+          id
+        }
+      }
+    }
+  }
+`;
+
 export const GET_MEMBERS = gql`
   query members($contractAddr: String!, $skip: Int) {
     members(
@@ -157,7 +187,7 @@ const baseProposalFields = `
         decimals
       }
     }
-    
+
   }
   votes {
     id
@@ -167,7 +197,7 @@ const baseProposalFields = `
       memberAddress
     }
   }
-  
+
   tributeTokenSymbol @client
   tributeTokenDecimals @client
   paymentTokenSymbol @client
@@ -205,8 +235,8 @@ export const GET_PROPOSAL = gql`
 export const GET_ACTIVE_PROPOSALS = gql`
   query proposals($contractAddr: String!) {
     proposals(
-      orderBy: proposalIndex, 
-      orderDirection: desc, 
+      orderBy: proposalIndex,
+      orderDirection: desc,
       where: { processed: false, molochAddress: $contractAddr }
     ) {
       ${baseProposalFields}
