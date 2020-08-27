@@ -23,7 +23,7 @@ export const supportedChains = {
     api_url: 'https://e5sk5e8me2.execute-api.us-east-1.amazonaws.com/rinkeby',
     daohaus_url: 'https://rinkeby.daohaus.club',
     subgraph_url:
-      'https://api.thegraph.com/subgraphs/name/odyssy-automaton/daohaus-rinkeby',
+      'https://api.thegraph.com/subgraphs/name/wswarren12/lex-dao-multi-summoner-moloch-r',
   },
   42: {
     name: 'Ethereum Kovan',
