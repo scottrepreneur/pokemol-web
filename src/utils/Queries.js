@@ -56,6 +56,11 @@ export const GET_MOLOCH_V2X = gql`
       totalShares
       version
       guildBankAddress
+      depositToken {
+        tokenAddress
+        symbol
+        decimals
+      }
       tokenBalances {
         token {
           tokenAddress

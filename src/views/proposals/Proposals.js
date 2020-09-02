@@ -79,10 +79,11 @@ const Proposals = ({ match, history }) => {
     <>
       <ProposalsHeaderRow>
         <h3>Proposals</h3>
-        {currentWallet.shares || (daoData.version === 2 && currentUser) ? (
+        {currentWallet.shares ||
+        ((daoData.version === 2 || daoData.version === '2x') && currentUser) ? (
           <NewProposalButton
             to={
-              daoData.version === 2
+              daoData.version === 2 || daoData.version === '2x'
                 ? `/dao/${daoService.daoAddress}/proposal-engine`
                 : `/dao/${daoService.daoAddress}/proposal-new`
             }
@@ -101,7 +102,7 @@ const Proposals = ({ match, history }) => {
           </NewProposalButton>
         ) : null}
       </ProposalsHeaderRow>
-      {+daoData.version === 2 ? (
+      {+daoData.version === 2 || daoData.version === '2x' ? (
         <ProposalTypeToggle
           handleTypeChange={setSponsored}
           sponsored={sponsored}
