@@ -58,7 +58,7 @@ export class DaoService {
 
     let mcDao;
     let approvedToken;
-    if (version === 2) {
+    if (version === 2 || version === '2x') {
       mcDao = new Web3McDaoServiceV2(
         web3,
         contractAddr,
@@ -123,7 +123,7 @@ export class DaoService {
     });
 
     let approvedToken;
-    if (version === 2) {
+    if (version === 2 || version === '2x') {
       approvedToken = await mcDao.getDepositToken();
     } else {
       approvedToken = await mcDao.approvedToken();
