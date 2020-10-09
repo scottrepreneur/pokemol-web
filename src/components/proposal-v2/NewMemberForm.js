@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-
+import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 import {
@@ -113,14 +113,45 @@ const NewMemberForm = (props) => {
                 setSubmitting(true);
 
                 const uuid = shortid.generate();
-                const detailsObj = JSON.stringify({
-                  id: uuid,
-                  title: values.title,
-                  description: values.description,
-                  link: values.link,
-                });
+                // const detailsObj = JSON.stringify({
+                //   id: uuid,
+                //   title: values.title,
+                //   description: values.description,
+                //   link: values.link,
+                // });
+                let hash = '';
 
                 try {
+                  const config = {
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Access-Control-Allow-Origin': '*',
+                    },
+                  };
+                  const res = await axios.post(
+                    'https://k2y43wf9ji.execute-api.us-east-1.amazonaws.com/dev/',
+                    {
+                      id: uuid,
+                      title: values.title,
+                      description: values.description,
+                      link: values.link,
+                      tributeOffered: values.tributeOffered,
+                      tributeToken: values.tributeToken,
+                      sharesRequested: values.sharesRequested,
+                      lootRequested: values.lootRequested,
+                      paymentRequested: 0,
+                    },
+                    config,
+                  );
+                  hash = res.data.uploadHash;
+                } catch (err) {
+                  console.log('Error: ', err);
+                  setFormLoading(true);
+                  setSubmitting(true);
+                }
+
+                try {
+                  console.log(hash);
                   await daoService.mcDao.submitProposal(
                     values.sharesRequested,
                     values.lootRequested,
@@ -132,7 +163,7 @@ const NewMemberForm = (props) => {
                     values.tributeToken,
                     0,
                     tokenData[0].value,
-                    detailsObj,
+                    hash,
                   );
                   setSubmitting(false);
                   setFormLoading(false);

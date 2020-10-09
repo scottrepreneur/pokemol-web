@@ -1,3 +1,4 @@
+import bs58 from 'bs58';
 import DaoAbi from '../contracts/mcdao.json';
 import DaoAbiV2 from '../contracts/molochv2.json';
 import DaoAbiV2x from '../contracts/molochv2x.json';
@@ -266,16 +267,19 @@ export class Web3McDaoService extends McDaoService {
   }
 
   async submitProposal(applicant, tokenTribute, sharesRequested, details) {
+    console.log(details);
+
+    const b32details = this.web3.utils.fromAscii(details);
     const txReceipt = await this.daoContract.methods
-      .submitProposal(applicant, tokenTribute, sharesRequested, details)
+      .submitProposal(applicant, tokenTribute, sharesRequested, b32details)
       .send({ from: this.accountAddr });
 
-    const parseDetails = JSON.parse(details);
+    // const parseDetails = JSON.parse(details);
 
     this.bcProcessor.setTx(
       txReceipt.transactionHash,
       this.accountAddr,
-      `Submit proposal (${parseDetails.title})`,
+      `Submit proposal (testTitle)`,
       true,
     );
     return txReceipt.transactionHash;
@@ -391,16 +395,20 @@ export class Web3McDaoServiceV2 extends Web3McDaoService {
         tributeToken,
         paymentRequested,
         PaymentToken,
-        details,
+        '0x' +
+          bs58
+            .decode(details)
+            .slice(2)
+            .toString('hex'),
       )
       .send({ from: this.accountAddr });
 
-    const parseDetails = JSON.parse(details);
+    // const parseDetails = JSON.parse(details);
 
     this.bcProcessor.setTx(
       txReceipt.transactionHash,
       this.accountAddr,
-      `Submit proposal (${parseDetails.title})`,
+      `Submit proposal (testTitle)`,
       true,
     );
     return txReceipt.transactionHash;
