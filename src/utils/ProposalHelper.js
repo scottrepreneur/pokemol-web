@@ -1,4 +1,6 @@
 import React, { Fragment } from 'react';
+import bs58 from 'bs58';
+import axios from 'axios';
 
 export const ProposalStatus = {
   Unknown: 'Unknown',
@@ -190,20 +192,31 @@ export const groupByStatus = (proposals, unsponsoredView) => {
   };
 };
 
-export const titleMaker = (proposal) => {
+export const titleMaker = async (proposal) => {
   // if (containsNonLatinCodepoints(proposal.details)) {
   //   return `Proposal ${proposal.proposalId}`;
   // }
+  console.log(proposal);
+  const hashHex = '1220' + proposal.details.slice(2);
+  const bytes = Buffer.from(hashHex, 'hex');
+  const decodedHash = bs58.encode(bytes);
+
+  const test = await axios.get(
+    'https://gateway.pinata.cloud/ipfs/' + decodedHash,
+  );
 
   const details = proposal.details.split('~');
 
+  // v1/v2 picker?
   if (details[0] === 'id') {
     return details[3];
   } else if (details[0][0] === '{') {
     let parsedDetails;
 
+    proposal.details = test.data;
     try {
-      parsedDetails = JSON.parse(proposal.details);
+      parsedDetails = test.data;
+      console.log(parsedDetails);
       return parsedDetails.title;
     } catch {
       if (proposal.details && proposal.details.indexOf('link:') > -1) {
