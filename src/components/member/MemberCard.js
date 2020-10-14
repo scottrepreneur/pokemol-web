@@ -68,7 +68,7 @@ const MemberCard = ({ member }) => {
         <OfferDivMemberCard>
           <div>
             <h5>Shares</h5>
-            <DataH2>{member.shares}</DataH2>
+            <DataH2>{web3Service.fromWei(member.shares)}</DataH2>
           </div>
           {+daoData.version !== 2 ? (
             <div>

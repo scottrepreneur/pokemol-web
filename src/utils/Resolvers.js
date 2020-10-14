@@ -1,4 +1,6 @@
 import Web3 from 'web3';
+import axios from 'axios';
+import bs58 from 'bs58';
 
 import {
   determineProposalStatus,
@@ -133,6 +135,20 @@ export const resolvers = {
     },
     proposalType: (proposal, _args, { cache }) => {
       return determineProposalType(proposal);
+    },
+    ipfsDetails: async (proposal, _args, { cache }) => {
+      if (proposal.details.slice(0, 2) === '0x') {
+        const hashHex = '1220' + proposal.details.slice(2);
+        const bytes = Buffer.from(hashHex, 'hex');
+        const decodedHash = bs58.encode(bytes);
+
+        const result = await axios.get(
+          'https://gateway.pinata.cloud/ipfs/' + decodedHash,
+        );
+        return result.data;
+      }
+
+      return null;
     },
   },
 

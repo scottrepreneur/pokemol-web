@@ -213,6 +213,7 @@ const baseProposalFields = `
   votingStarts @client
   readyForProcessing @client
   proposalType @client
+  ipfsDetails @client
 `;
 
 export const GET_PROPOSALS = gql`

@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/react-hooks';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
+import Web3Service from '../../utils/Web3Service';
 import { DaoDataContext } from '../../contexts/Store';
 import BottomNav from '../../components/shared/BottomNav';
 import ErrorMessage from '../../components/shared/ErrorMessage';
@@ -118,6 +119,8 @@ const DataDiv = styled.div`
   }
 `;
 
+const web3Service = new Web3Service();
+
 const Home = () => {
   const [chartView, setChartView] = useState('bank');
   const [daoData] = useContext(DaoDataContext);
@@ -148,7 +151,7 @@ const Home = () => {
             <>
               <div>
                 <h5>Shares</h5>
-                <h2>{data.moloch.totalShares}</h2>
+                <h2>{web3Service.fromWei(data.moloch.totalShares)}</h2>
               </div>
               <WhitelistTokenBalances
                 tokens={data.moloch.tokenBalances.filter(

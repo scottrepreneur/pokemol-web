@@ -1,6 +1,4 @@
 import React, { Fragment } from 'react';
-import bs58 from 'bs58';
-import axios from 'axios';
 
 export const ProposalStatus = {
   Unknown: 'Unknown',
@@ -197,26 +195,18 @@ export const titleMaker = async (proposal) => {
   //   return `Proposal ${proposal.proposalId}`;
   // }
   console.log(proposal);
-  const hashHex = '1220' + proposal.details.slice(2);
-  const bytes = Buffer.from(hashHex, 'hex');
-  const decodedHash = bs58.encode(bytes);
 
-  const test = await axios.get(
-    'https://gateway.pinata.cloud/ipfs/' + decodedHash,
-  );
-
+  if (proposal.ipfsDetails) {
+    return proposal.ipfsDetails.title;
+  }
   const details = proposal.details.split('~');
 
-  // v1/v2 picker?
   if (details[0] === 'id') {
     return details[3];
   } else if (details[0][0] === '{') {
     let parsedDetails;
 
-    proposal.details = test.data;
     try {
-      parsedDetails = test.data;
-      console.log(parsedDetails);
       return parsedDetails.title;
     } catch {
       if (proposal.details && proposal.details.indexOf('link:') > -1) {
@@ -236,6 +226,9 @@ export const titleMaker = async (proposal) => {
 };
 
 export const descriptionMaker = (proposal) => {
+  if (proposal.ipfsDetails) {
+    return proposal.ipfsDetails.description;
+  }
   try {
     const parsed = JSON.parse(proposal.details);
     return parsed.description;
@@ -252,6 +245,9 @@ export const descriptionMaker = (proposal) => {
 };
 
 export const linkMaker = (proposal) => {
+  if (proposal.ipfsDetails) {
+    return proposal.ipfsDetails.link;
+  }
   try {
     const parsed = JSON.parse(proposal.details);
     return typeof parsed.link === 'function' ? null : parsed.link;

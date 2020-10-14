@@ -9,6 +9,7 @@ import {
   DaoServiceContext,
   DaoDataContext,
 } from '../../contexts/Store';
+import Web3Service from '../../utils/Web3Service';
 import { WalletStatuses } from '../../utils/WalletStatus';
 import { truncateAddr } from '../../utils/Helpers';
 import Arrow from '../../assets/DropArrow.svg';
@@ -34,6 +35,8 @@ import {
   TinyButton,
 } from './UserBalances.styles';
 import EtherscanLink from '../shared/EtherscanLink';
+
+const web3Service = new Web3Service();
 
 const UserBalance = ({ toggle }) => {
   const [daoData] = useContext(DaoDataContext);
@@ -269,7 +272,7 @@ const UserBalance = ({ toggle }) => {
           <BalancesDiv>
             <BalanceItemDiv>
               <p>Shares</p>
-              <DataP>{currentWallet.shares}</DataP>
+              <DataP>{web3Service.fromWei(currentWallet.shares)}</DataP>
             </BalanceItemDiv>
             {+daoData.version === 2 && data ? (
               <BalanceItemDiv>
