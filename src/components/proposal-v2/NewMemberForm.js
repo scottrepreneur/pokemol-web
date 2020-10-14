@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 import {
@@ -25,6 +24,7 @@ import shortid from 'shortid';
 import TokenSelect from './TokenSelect';
 import { valToDecimalString } from '../../utils/Helpers';
 import { GET_MOLOCH_V2X } from '../../utils/Queries';
+import { postDetailsToIpfs } from '../../utils/ProposalHelper';
 
 const NewMemberForm = (props) => {
   const { history } = props;
@@ -113,42 +113,18 @@ const NewMemberForm = (props) => {
                 setSubmitting(true);
 
                 const uuid = shortid.generate();
-                // const detailsObj = JSON.stringify({
-                //   id: uuid,
-                //   title: values.title,
-                //   description: values.description,
-                //   link: values.link,
-                // });
-                let hash = '';
 
-                try {
-                  const config = {
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Access-Control-Allow-Origin': '*',
-                    },
-                  };
-                  const res = await axios.post(
-                    'https://k2y43wf9ji.execute-api.us-east-1.amazonaws.com/dev/',
-                    {
-                      id: uuid,
-                      title: values.title,
-                      description: values.description,
-                      link: values.link,
-                      tributeOffered: values.tributeOffered,
-                      tributeToken: values.tributeToken,
-                      sharesRequested: values.sharesRequested,
-                      lootRequested: values.lootRequested,
-                      paymentRequested: 0,
-                    },
-                    config,
-                  );
-                  hash = res.data.uploadHash;
-                } catch (err) {
-                  console.log('Error: ', err);
-                  setFormLoading(true);
-                  setSubmitting(true);
-                }
+                const hash = await postDetailsToIpfs({
+                  id: uuid,
+                  title: values.title,
+                  description: values.description,
+                  link: values.link,
+                  tributeOffered: values.tributeOffered,
+                  tributeToken: values.tributeToken,
+                  sharesRequested: values.sharesRequested,
+                  lootRequested: values.lootRequested,
+                  paymentRequested: 0,
+                }).catch((err) => console.log(err));
 
                 try {
                   console.log(hash);

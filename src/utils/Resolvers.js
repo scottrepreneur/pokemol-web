@@ -30,7 +30,9 @@ export const resolvers = {
         +currentPeriod,
         +proposal.moloch.votingPeriodLength,
         +proposal.moloch.gracePeriodLength,
-        +proposal.moloch.version,
+        proposal.moloch.version === '2x'
+          ? proposal.moloch.version
+          : +proposal.moloch.version,
       );
     },
     gracePeriod: (proposal, _args, { cache }) => {
@@ -91,7 +93,9 @@ export const resolvers = {
           currentPeriod,
           +proposal.moloch.votingPeriodLength,
           +proposal.moloch.gracePeriodLength,
-          +proposal.moloch.version,
+          proposal.moloch.version === '2x'
+            ? proposal.moloch.version
+            : +proposal.moloch.version,
         ) &&
         !proposal.processed
       ) {
@@ -142,10 +146,14 @@ export const resolvers = {
         const bytes = Buffer.from(hashHex, 'hex');
         const decodedHash = bs58.encode(bytes);
 
-        const result = await axios.get(
-          'https://gateway.pinata.cloud/ipfs/' + decodedHash,
-        );
-        return result.data;
+        try {
+          const result = await axios.get(
+            'https://gateway.pinata.cloud/ipfs/' + decodedHash,
+          );
+          return result.data;
+        } catch (err) {
+          console.log(err);
+        }
       }
 
       return null;

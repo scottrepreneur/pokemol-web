@@ -10,6 +10,7 @@ import {
   DaoServiceContext,
   CurrentUserContext,
 } from '../../contexts/Store';
+import { postDetailsToIpfs } from '../../utils/ProposalHelper';
 import Loading from '../shared/Loading';
 
 import { WhiteListGuildKickSchema } from './Validation';
@@ -41,17 +42,23 @@ const GuildKickForm = (props) => {
               validationSchema={WhiteListGuildKickSchema}
               onSubmit={async (values, { setSubmitting }) => {
                 const uuid = shortid.generate();
-                const detailsObj = JSON.stringify({
+
+                const hash = await postDetailsToIpfs({
                   id: uuid,
                   title: values.title,
                   description: values.description,
                   link: values.link,
-                });
+                  tributeOffered: values.tributeOffered,
+                  tributeToken: values.tributeToken,
+                  sharesRequested: values.sharesRequested,
+                  lootRequested: values.lootRequested,
+                  paymentRequested: 0,
+                }).catch((err) => console.log(err));
 
                 try {
                   await daoService.mcDao.submitGuildKickProposal(
                     values.applicant,
-                    detailsObj,
+                    hash,
                   );
                   setSubmitting(false);
                   setFormLoading(false);

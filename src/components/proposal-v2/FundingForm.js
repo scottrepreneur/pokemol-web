@@ -25,6 +25,7 @@ import shortid from 'shortid';
 import TokenSelect from './TokenSelect';
 import { valToDecimalString } from '../../utils/Helpers';
 import { GET_MOLOCH_V2X } from '../../utils/Queries';
+import { postDetailsToIpfs } from '../../utils/ProposalHelper';
 
 const FundingForm = (props) => {
   const { history } = props;
@@ -116,12 +117,18 @@ const FundingForm = (props) => {
                 setSubmitting(true);
 
                 const uuid = shortid.generate();
-                const detailsObj = JSON.stringify({
+                const hash = await postDetailsToIpfs({
                   id: uuid,
                   title: values.title,
                   description: values.description,
                   link: values.link,
-                });
+                  tributeOffered: values.tributeOffered,
+                  tributeToken: values.tributeToken,
+                  sharesRequested: values.sharesRequested,
+                  lootRequested: values.lootRequested,
+                  paymentRequested: 0,
+                }).catch((err) => console.log(err));
+
                 try {
                   await daoService.mcDao.submitProposal(
                     values.sharesRequested,
@@ -138,7 +145,7 @@ const FundingForm = (props) => {
                       tokenData,
                     ),
                     values.paymentToken,
-                    detailsObj,
+                    hash,
                     values.applicant,
                   );
                   setSubmitting(false);

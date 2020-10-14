@@ -113,7 +113,7 @@ const ProposalDetail = ({ proposal, processProposal, submitVote, canVote }) => {
         </div>
       ) : null}
 
-      {+daoData.version === 2 ? (
+      {+daoData.version === 2 || daoData.version === '2x' ? (
         <ProposalV2Guts proposal={proposal} daoData={daoData} />
       ) : (
         <>
@@ -146,7 +146,8 @@ const ProposalDetail = ({ proposal, processProposal, submitVote, canVote }) => {
         <button onClick={() => processProposal(proposal)}>Process</button>
       )}
 
-      {+daoData.version !== 2 || proposal.sponsored ? (
+      {(+daoData.version !== 2 && !daoData.version === '2x') ||
+      proposal.sponsored ? (
         <VoteControl
           submitVote={submitVote}
           proposal={proposal}
@@ -154,7 +155,8 @@ const ProposalDetail = ({ proposal, processProposal, submitVote, canVote }) => {
         />
       ) : (
         <>
-          {+daoData.version === 2 && currentUser ? (
+          {(+daoData.version === 2 || daoData.version === '2x') &&
+          currentUser ? (
             <ProposalActions proposal={proposal} />
           ) : null}
         </>

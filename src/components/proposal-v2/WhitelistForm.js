@@ -10,6 +10,7 @@ import {
   DaoServiceContext,
 } from '../../contexts/Store';
 import Loading from '../shared/Loading';
+import { postDetailsToIpfs } from '../../utils/ProposalHelper';
 
 import { withApollo } from 'react-apollo';
 import { WhiteListGuildKickSchema } from './Validation';
@@ -45,17 +46,22 @@ const WhitelistForm = (props) => {
                 setFormLoading(true);
 
                 const uuid = shortid.generate();
-                const detailsObj = JSON.stringify({
+                const hash = await postDetailsToIpfs({
                   id: uuid,
                   title: values.title,
                   description: values.description,
                   link: values.link,
-                });
+                  tributeOffered: values.tributeOffered,
+                  tributeToken: values.tributeToken,
+                  sharesRequested: values.sharesRequested,
+                  lootRequested: values.lootRequested,
+                  paymentRequested: 0,
+                }).catch((err) => console.log(err));
 
                 try {
                   await daoService.mcDao.submitWhiteListProposal(
                     values.applicant,
-                    detailsObj,
+                    hash,
                   );
                   setSubmitting(false);
                   setFormLoading(false);

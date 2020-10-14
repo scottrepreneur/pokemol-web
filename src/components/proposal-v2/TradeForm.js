@@ -24,7 +24,8 @@ import { ProposalSchema } from './Validation';
 import shortid from 'shortid';
 import TokenSelect from './TokenSelect';
 import { valToDecimalString } from '../../utils/Helpers';
-import { GET_MOLOCH } from '../../utils/Queries';
+import { GET_MOLOCH_V2X } from '../../utils/Queries';
+import { postDetailsToIpfs } from '../../utils/ProposalHelper';
 
 const H2Arrow = styled.h2`
   text-align: center;
@@ -45,7 +46,7 @@ const TradeForm = (props) => {
     variables: { contractAddr: daoData.contractAddress },
     fetchPolicy: 'no-cache',
   };
-  const query = GET_MOLOCH;
+  const query = GET_MOLOCH_V2X;
 
   const { loading, error, data } = useQuery(query, options);
 
@@ -120,12 +121,19 @@ const TradeForm = (props) => {
                 setSubmitting(true);
 
                 const uuid = shortid.generate();
-                const detailsObj = JSON.stringify({
+
+                const hash = await postDetailsToIpfs({
                   id: uuid,
                   title: values.title,
                   description: values.description,
                   link: values.link,
-                });
+                  tributeOffered: values.tributeOffered,
+                  tributeToken: values.tributeToken,
+                  sharesRequested: values.sharesRequested,
+                  lootRequested: values.lootRequested,
+                  paymentRequested: 0,
+                }).catch((err) => console.log(err));
+
                 try {
                   await daoService.mcDao.submitProposal(
                     values.sharesRequested,
@@ -142,7 +150,7 @@ const TradeForm = (props) => {
                       tokenData,
                     ),
                     values.paymentToken,
-                    detailsObj,
+                    hash,
                   );
                   setSubmitting(false);
                   setFormLoading(false);

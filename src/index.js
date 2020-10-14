@@ -24,7 +24,7 @@ const client = new ApolloClient({
 const Index = () => {
   var pathname = window.location.pathname.split('/');
   const daoParam = pathname[2];
-  const regex = RegExp('0x[0-9a-f]{10,40}');
+  const regex = RegExp('0x[0-9a-fA-F]{10,40}');
   const validParam =
     pathname[1] === 'dao' && regex.test(daoParam) ? daoParam : false;
 

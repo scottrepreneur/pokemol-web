@@ -113,7 +113,7 @@ const StackedVote = ({ id, currentYesVote, currentNoVote, page }) => {
     const currentProposal = async () => {
       // TODO: why am i doing this? should be using the subgraph
       const info =
-        +daoData.version === 2
+        +daoData.version === 2 || daoData.version === '2x'
           ? await daoService.mcDao.proposals(id)
           : await daoService.mcDao.proposalQueue(id);
 

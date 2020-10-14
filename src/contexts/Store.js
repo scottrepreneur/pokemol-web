@@ -66,9 +66,11 @@ const Store = ({ children, daoParam }) => {
       let version = null;
 
       try {
-        const daoRes = await get(`moloch/${daoParam}`);
-        apiData = daoRes.data;
-        version = apiData.version || '1';
+        if (daoParam) {
+          const daoRes = await get(`moloch/${daoParam}`);
+          apiData = daoRes.data;
+          version = apiData.version || '1';
+        }
       } catch (err) {
         console.log('api fetch error');
       }

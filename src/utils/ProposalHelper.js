@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import axios from 'axios';
 
 export const ProposalStatus = {
   Unknown: 'Unknown',
@@ -124,9 +125,9 @@ export function determineProposalStatus(
   // TODO: handle V2 - no aborted
   const abortedOrCancelled = proposal.aborted || proposal.cancelled;
   // if (proposal.processed && proposal.aborted) {
-  if (proposal.processed && abortedOrCancelled) {
+  if ((proposal.processed && abortedOrCancelled) || proposal.cancelled) {
     status = ProposalStatus.Aborted;
-  } else if (version === 2 && !proposal.sponsored) {
+  } else if ((version === 2 || version === '2x') && !proposal.sponsored) {
     status = ProposalStatus.Unsponsored;
   } else if (proposal.processed && proposal.didPass) {
     status = ProposalStatus.Passed;
@@ -166,7 +167,9 @@ export const groupByStatus = (proposals, unsponsoredView) => {
     Unsponsored: {
       Cancelled: proposals.filter((p) => p.cancelled),
       Unsponsored: proposals.filter((p) => {
-        return unsponsoredView && !p.cancelled && !p.processed;
+        return (
+          unsponsoredView && !p.cancelled && !p.processed && !p.proposalIndex
+        );
       }),
     },
     Base: {
@@ -190,11 +193,10 @@ export const groupByStatus = (proposals, unsponsoredView) => {
   };
 };
 
-export const titleMaker = async (proposal) => {
+export const titleMaker = (proposal) => {
   // if (containsNonLatinCodepoints(proposal.details)) {
   //   return `Proposal ${proposal.proposalId}`;
   // }
-  console.log(proposal);
 
   if (proposal.ipfsDetails) {
     return proposal.ipfsDetails.title;
@@ -272,6 +274,25 @@ export const determineProposalType = (proposal) => {
     return 'Trade Proposal';
   } else {
     return 'Funding Proposal';
+  }
+};
+
+export const postDetailsToIpfs = async (details) => {
+  try {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+    };
+    const res = await axios.post(
+      'https://k2y43wf9ji.execute-api.us-east-1.amazonaws.com/dev/',
+      details,
+      config,
+    );
+    return res.data.uploadHash;
+  } catch (err) {
+    return err;
   }
 };
 

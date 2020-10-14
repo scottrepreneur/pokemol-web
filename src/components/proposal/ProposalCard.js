@@ -86,7 +86,9 @@ const ProposalCard = ({ proposal, index }) => {
   const title = titleMaker(proposal);
 
   const id =
-    +daoData.version === 2 ? proposal.proposalId : proposal.proposalIndex;
+    +daoData.version === 2 || daoData.version === '2x'
+      ? proposal.proposalId
+      : proposal.proposalIndex;
 
   return (
     <ProposalCardDiv>
