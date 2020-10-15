@@ -3,6 +3,9 @@ import styled from 'styled-components';
 
 import { DaoServiceContext, DaoDataContext } from '../../contexts/Store';
 import { getAppDark } from '../../variables.styles';
+import Web3Service from '../../utils/Web3Service';
+
+const web3Service = new Web3Service();
 
 const StackedVoteDiv = styled.div`
   position: ${(props) =>
@@ -138,8 +141,12 @@ const StackedVote = ({ id, currentYesVote, currentNoVote, page }) => {
     <StackedVoteDiv page={page}>
       <FullBarDiv page={page}>
         <LabelsDiv page={page}>
-          <YesLabelSpan page={page}>{yesVoteShares}</YesLabelSpan>
-          <NoLabelSpan page={page}>{noVoteShares}</NoLabelSpan>
+          <YesLabelSpan page={page}>
+            {web3Service.fromWei(yesVoteShares)}
+          </YesLabelSpan>
+          <NoLabelSpan page={page}>
+            {web3Service.fromWei(noVoteShares)}
+          </NoLabelSpan>
         </LabelsDiv>
         <BaseBarDiv />
         <YesBarDiv percentageShares={percentageSharesYes} />

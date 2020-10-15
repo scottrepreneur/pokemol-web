@@ -205,10 +205,11 @@ const ProposalCard = ({ proposal, index }) => {
       ) : null}
 
       <CardVoteDiv>
-        {daoData.version !== 2 ? (
+        {daoData.version !== 2 && daoData.version !== '2x' ? (
           <StackedVote id={id} page="ProposalCard" />
         ) : null}
-        {daoData.version === 2 && proposal.sponsored ? (
+        {(daoData.version === 2 || daoData.version === '2x') &&
+        proposal.sponsored ? (
           <StackedVote id={id} page="ProposalCard" />
         ) : null}
       </CardVoteDiv>
