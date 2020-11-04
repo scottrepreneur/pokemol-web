@@ -142,7 +142,7 @@ const ProposalCard = ({ proposal, index }) => {
           ) : (
             <div>
               <h5>Shares</h5>
-              <DataH2>{proposal.sharesRequested}</DataH2>
+              <DataH2>{Web3.utils.fromWei(proposal.sharesRequested)}</DataH2>
             </div>
           )}
 
@@ -191,7 +191,7 @@ const ProposalCard = ({ proposal, index }) => {
           {proposal.lootRequested > 0 ? (
             <div className="Shares">
               <h5>Loot Requested</h5>
-              <DataH2>{proposal.lootRequested} LOOT</DataH2>
+              <DataH2>{Web3.utils.fromWei(proposal.lootRequested)} LOOT</DataH2>
             </div>
           ) : null}
         </OfferDivProposalCard>

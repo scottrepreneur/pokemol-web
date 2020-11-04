@@ -120,8 +120,8 @@ const StackedVote = ({ id, currentYesVote, currentNoVote, page }) => {
           ? await daoService.mcDao.proposals(id)
           : await daoService.mcDao.proposalQueue(id);
 
-      const noVoteShares = parseInt(info.noVotes) + currentNoVote;
-      const yesVoteShares = parseInt(info.yesVotes) + currentYesVote;
+      const noVoteShares = parseInt(info.noShares) + currentNoVote;
+      const yesVoteShares = parseInt(info.yesShares) + currentYesVote;
       const totalVoteShares = noVoteShares + yesVoteShares;
       const percentageSharesYes = (yesVoteShares / totalVoteShares) * 100 || 0;
       const percentageSharesNo = (noVoteShares / totalVoteShares) * 100 || 0;
