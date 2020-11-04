@@ -169,8 +169,8 @@ const Store = ({ children, daoParam }) => {
     const member = await daoService.mcDao.members(addrByDelegateKey);
     // shares will be 0 if not a member, could also be 0 if rage quit
     // TODO: check membersheip a different way
-    const shares = parseInt(member.shares);
-    const loot = parseInt(member.loot);
+    const shares = member.shares;
+    const loot = member.loot;
     const jailed = parseInt(member.jailed);
     const highestIndexYesVote = member.highestIndexYesVote;
 
