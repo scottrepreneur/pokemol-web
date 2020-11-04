@@ -389,8 +389,8 @@ export class Web3McDaoServiceV2 extends Web3McDaoService {
     const txReceipt = await this.daoContract.methods
       .submitProposal(
         applicant,
-        sharesRequested,
-        lootRequested,
+        this.web3.utils.toWei(sharesRequested.toString()),
+        this.web3.utils.toWei(lootRequested.toString()),
         tributeOffered,
         tributeToken,
         paymentRequested,

@@ -147,10 +147,17 @@ export const resolvers = {
         const decodedHash = bs58.encode(bytes);
 
         try {
-          const result = await axios.get(
-            'https://gateway.pinata.cloud/ipfs/' + decodedHash,
-          );
-          return result.data;
+          if (proposal.proposalId !== '0' && proposal.proposalId !== '1') {
+            const result = await axios.get(
+              'https://gateway.ipfs.io/ipfs/' + decodedHash,
+            );
+            return result.data;
+          }
+          return {
+            title: 'test proposal',
+            description: 'test description',
+            id: 'u' + proposal.proposalId,
+          };
         } catch (err) {
           console.log(err);
         }
