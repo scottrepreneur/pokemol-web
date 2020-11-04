@@ -10,7 +10,7 @@ export const supportedChains = {
     api_url: 'https://luizh7qidl.execute-api.us-east-1.amazonaws.com/prod',
     daohaus_url: 'https://daohaus.club',
     subgraph_url:
-      'https://api.thegraph.com/subgraphs/name/odyssy-automaton/daohaus',
+      'https://api.thegraph.com/subgraphs/name/wswarren12/lex-dao-multi-summoner-moloch',
   },
   4: {
     name: 'Ethereum Rinkeby',
