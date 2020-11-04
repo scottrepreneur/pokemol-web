@@ -416,7 +416,11 @@ export class Web3McDaoServiceV2 extends Web3McDaoService {
 
   async submitGuildKickProposal(memberToKick, details) {
     const txReceipt = await this.daoContract.methods
-      .submitGuildKickProposal(memberToKick, details)
+      .submitGuildKickProposal(memberToKick, '0x' +
+      bs58
+        .decode(details)
+        .slice(2)
+        .toString('hex'))
       .send({ from: this.accountAddr });
 
     const parseDetails = JSON.parse(details);
@@ -436,7 +440,11 @@ export class Web3McDaoServiceV2 extends Web3McDaoService {
 
     try {
       txReceipt = await this.daoContract.methods
-        .submitWhitelistProposal(address, details)
+        .submitWhitelistProposal(address, '0x' +
+        bs58
+          .decode(details)
+          .slice(2)
+          .toString('hex'))
         .send({ from: this.accountAddr });
     } catch (err) {
       console.log(err);
