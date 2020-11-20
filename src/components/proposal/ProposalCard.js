@@ -82,6 +82,7 @@ const ProposalCard = ({ proposal, index }) => {
     proposal,
     proposal.moloch.periodDuration,
   );
+  console.log(proposal.proposalId);
 
   const title = titleMaker(proposal);
 

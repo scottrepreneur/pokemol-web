@@ -3,9 +3,10 @@ import styled from 'styled-components';
 
 import { DaoServiceContext, DaoDataContext } from '../../contexts/Store';
 import { getAppDark } from '../../variables.styles';
-import Web3Service from '../../utils/Web3Service';
+// import Web3Service from '../../utils/Web3Service';
+import { BigNumber } from 'bignumber.js';
 
-const web3Service = new Web3Service();
+// const web3Service = new Web3Service();
 
 const StackedVoteDiv = styled.div`
   position: ${(props) =>
@@ -98,10 +99,10 @@ const QuorumBarDiv = styled.div`
 `;
 
 const StackedVote = ({ id, currentYesVote, currentNoVote, page }) => {
-  const [noVoteShares, setNoVoteShares] = useState(0);
-  const [yesVoteShares, setYesVoteShares] = useState(0);
-  const [percentageSharesYes, setPercentageSharesYes] = useState(0);
-  const [percentageSharesNo, setPercentageSharesNo] = useState(0);
+  const [noVoteShares, setNoVoteShares] = useState();
+  const [yesVoteShares, setYesVoteShares] = useState();
+  const [percentageSharesYes, setPercentageSharesYes] = useState();
+  const [percentageSharesNo, setPercentageSharesNo] = useState();
   const [daoService] = useContext(DaoServiceContext);
   const [daoData] = useContext(DaoDataContext);
 
@@ -117,14 +118,20 @@ const StackedVote = ({ id, currentYesVote, currentNoVote, page }) => {
       // TODO: why am i doing this? should be using the subgraph
       const info =
         +daoData.version === 2 || daoData.version === '2x'
-          ? await daoService.mcDao.proposals(id)
+          ? await daoService.mcDao.proposals(
+              page === 'ProposalCard' ? id : id + 1,
+            )
           : await daoService.mcDao.proposalQueue(id);
 
-      const noVoteShares = parseInt(info.noShares) + currentNoVote;
-      const yesVoteShares = parseInt(info.yesShares) + currentYesVote;
-      const totalVoteShares = noVoteShares + yesVoteShares;
-      const percentageSharesYes = (yesVoteShares / totalVoteShares) * 100 || 0;
-      const percentageSharesNo = (noVoteShares / totalVoteShares) * 100 || 0;
+      const noVoteShares = new BigNumber(info.noVotes).plus(currentNoVote);
+      const yesVoteShares = new BigNumber(info.yesVotes).plus(currentYesVote);
+      const totalVoteShares = noVoteShares.plus(yesVoteShares);
+      const percentageSharesYes =
+        yesVoteShares.dividedBy(totalVoteShares).times(100) ||
+        new BigNumber('0');
+      const percentageSharesNo =
+        noVoteShares.dividedBy(totalVoteShares).times(100) ||
+        new BigNumber('0');
 
       setNoVoteShares(noVoteShares);
       setYesVoteShares(yesVoteShares);
@@ -141,12 +148,8 @@ const StackedVote = ({ id, currentYesVote, currentNoVote, page }) => {
     <StackedVoteDiv page={page}>
       <FullBarDiv page={page}>
         <LabelsDiv page={page}>
-          <YesLabelSpan page={page}>
-            {web3Service.fromWei(yesVoteShares)}
-          </YesLabelSpan>
-          <NoLabelSpan page={page}>
-            {web3Service.fromWei(noVoteShares)}
-          </NoLabelSpan>
+          <YesLabelSpan page={page}>{yesVoteShares?.toString()}</YesLabelSpan>
+          <NoLabelSpan page={page}>{noVoteShares?.toString()}</NoLabelSpan>
         </LabelsDiv>
         <BaseBarDiv />
         <YesBarDiv percentageShares={percentageSharesYes} />
